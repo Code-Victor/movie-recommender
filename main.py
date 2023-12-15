@@ -127,11 +127,12 @@ st.markdown(
 )
 
 
-def card(name, image, rating):
+def card(imdb_id, name, image, rating):
     """
     The `card` function takes in a name, image URL, and rating, and returns an HTML card element with
     the provided information.
 
+    :param imdb_id: The Imdb id of the movie
     :param name: The name of the card, which will be displayed as the heading
     :param image: The `image` parameter is the URL or file path of the image associated with the card.
     It is used to display the image in the card
@@ -144,14 +145,19 @@ def card(name, image, rating):
         color = "rgb(251, 146, 60)"
     if rating > 7.5:
         color = "rgb(34, 197, 94)"
+    url = (
+        f"https://www.imdb.com/title/{imdb_id}"
+        if imdb_id is not None
+        else "https://www.imdb.com/"
+    )
     return f"""
-           <div class="card">
+           <a href="{url}" target="_blank" class="card">
             <img class="card-image" src="{image}" alt="{name}"/>
             <div class="card-content">
                 <span class="rating" style="color:{color};">{rating}</span>
                 <span class="heading">{name}</span>
             </div>
-           </div>
+           </a>
            """
 
 
@@ -166,8 +172,19 @@ def handle_card_data(data):
     on the data provided. If the `data` parameter is `None`, an empty string is returned.
     """
     if data is not None:
+        title = data.get("Title")
+        image = (
+            "https://images.unsplash.com/photo-1702651250304-2d1d94d1f847?q=80&w=1887&auto=format"
+            if data.get("Poster") == "N/A"
+            else data.get("Poster")
+        )
+        rating = 0 if data.get("imdbRating") == "N/A" else data.get("imdbRating")
+        imdb_id = None if data.get("imdbID") == "N/A" else data.get("imdbID")
         return card(
-            name=data["Title"], image=data["Poster"], rating=float(data["imdbRating"])
+            imdb_id=imdb_id,
+            name=title,
+            image=image,
+            rating=float(rating),
         )
     return ""
 
