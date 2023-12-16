@@ -171,15 +171,16 @@ def handle_card_data(data):
     :return: an instance of the `card` class with the `name`, `image`, and `rating` attributes set based
     on the data provided. If the `data` parameter is `None`, an empty string is returned.
     """
+    empty_values = ["N/A", None]
     if data is not None:
         title = data.get("Title")
         image = (
             "https://images.unsplash.com/photo-1702651250304-2d1d94d1f847?q=80&w=1887&auto=format"
-            if data.get("Poster") == "N/A"
+            if data.get("Poster") in empty_values
             else data.get("Poster")
         )
-        rating = 0 if data.get("imdbRating") == "N/A" else data.get("imdbRating")
-        imdb_id = None if data.get("imdbID") == "N/A" else data.get("imdbID")
+        rating = 0 if data.get("imdbRating") in empty_values else data.get("imdbRating")
+        imdb_id = None if data.get("imdbID") in empty_values else data.get("imdbID")
         return card(
             imdb_id=imdb_id,
             name=title,
